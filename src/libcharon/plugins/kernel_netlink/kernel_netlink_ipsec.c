@@ -1551,6 +1551,7 @@ METHOD(kernel_ipsec_t, add_sa, status_t,
 			.int_alg = AUTH_UNDEFINED,
 			.tfc = data->tfc,
 			.ipcomp = data->ipcomp,
+			.cpu = data->cpu,
 			.initiator = data->initiator,
 			.inbound = data->inbound,
 			.update = data->update,
@@ -1896,6 +1897,15 @@ METHOD(kernel_ipsec_t, add_sa, status_t,
 		{
 			goto failed;
 		}
+	}
+
+	if (data->cpu < CPU_ID_MAX)
+	{
+		if (!add_uint32(hdr, sizeof(request), XFRMA_SA_PCPU, data->cpu))
+		{
+			goto failed;
+		}
+		DBG2(DBG_KNL, "  using CPU ID: %u", data->cpu);
 	}
 
 	if (id->proto != IPPROTO_COMP)
