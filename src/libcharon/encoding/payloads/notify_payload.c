@@ -127,7 +127,7 @@ ENUM_NEXT(notify_type_names, UNITY_LOAD_BALANCE, UNITY_LOAD_BALANCE, DPD_R_U_THE
 	"UNITY_LOAD_BALANCE");
 ENUM_NEXT(notify_type_names, USE_BEET_MODE, USE_BEET_MODE, UNITY_LOAD_BALANCE,
 	"USE_BEET_MODE");
-ENUM_NEXT(notify_type_names, ME_MEDIATION, RADIUS_ATTRIBUTE, USE_BEET_MODE,
+ENUM_NEXT(notify_type_names, ME_MEDIATION, QUEUE_INFO, USE_BEET_MODE,
 	"ME_MEDIATION",
 	"ME_ENDPOINT",
 	"ME_CALLBACK",
@@ -135,8 +135,10 @@ ENUM_NEXT(notify_type_names, ME_MEDIATION, RADIUS_ATTRIBUTE, USE_BEET_MODE,
 	"ME_CONNECTKEY",
 	"ME_CONNECTAUTH",
 	"ME_RESPONSE",
-	"RADIUS_ATTRIBUTE");
-ENUM_END(notify_type_names, RADIUS_ATTRIBUTE);
+	"RADIUS_ATTRIBUTE",
+	"NUM_QUEUES",
+	"QUEUE_INFO");
+ENUM_END(notify_type_names, QUEUE_INFO);
 
 
 ENUM_BEGIN(notify_type_short_names, UNSUPPORTED_CRITICAL_PAYLOAD, UNSUPPORTED_CRITICAL_PAYLOAD,
@@ -241,7 +243,7 @@ ENUM_NEXT(notify_type_short_names, UNITY_LOAD_BALANCE, UNITY_LOAD_BALANCE, DPD_R
 	"UNITY_LB");
 ENUM_NEXT(notify_type_short_names, USE_BEET_MODE, USE_BEET_MODE, UNITY_LOAD_BALANCE,
 	"BEET_MODE");
-ENUM_NEXT(notify_type_short_names, ME_MEDIATION, RADIUS_ATTRIBUTE, USE_BEET_MODE,
+ENUM_NEXT(notify_type_short_names, ME_MEDIATION, QUEUE_INFO, USE_BEET_MODE,
 	"ME_MED",
 	"ME_EP",
 	"ME_CB",
@@ -249,8 +251,10 @@ ENUM_NEXT(notify_type_short_names, ME_MEDIATION, RADIUS_ATTRIBUTE, USE_BEET_MODE
 	"ME_CKEY",
 	"ME_CAUTH",
 	"ME_R",
-	"RADIUS");
-ENUM_END(notify_type_short_names, RADIUS_ATTRIBUTE);
+	"RADIUS",
+	"NQ",
+	"QI");
+ENUM_END(notify_type_short_names, QUEUE_INFO);
 
 
 typedef struct private_notify_payload_t private_notify_payload_t;
@@ -539,6 +543,9 @@ METHOD(payload_t, verify, status_t,
 			break;
 		case DPD_R_U_THERE:
 		case DPD_R_U_THERE_ACK:
+		case NUM_QUEUES:
+		/* FIXME: the data format of QUEUE_INFO is not yet fully specified */
+		case QUEUE_INFO:
 			if (this->notify_data.len != 4)
 			{
 				bad_length = TRUE;

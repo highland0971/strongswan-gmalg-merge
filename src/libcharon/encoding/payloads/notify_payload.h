@@ -178,6 +178,10 @@ enum notify_type_t {
 	ME_RESPONSE = 40968,
 	/* RADIUS attribute received/to send to a AAA backend */
 	RADIUS_ATTRIBUTE = 40969,
+	/* Number of queues (draft-pwouters-multi-sa-performance) */
+	NUM_QUEUES = 40970,
+	/* Queue info for CHILD_SAs (draft-pwouters-multi-sa-performance) */
+	QUEUE_INFO = 40971,
 };
 
 /**
