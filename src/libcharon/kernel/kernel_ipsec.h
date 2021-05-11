@@ -174,6 +174,8 @@ struct kernel_ipsec_manage_policy_t {
 	policy_priority_t prio;
 	/** Manually-set priority (automatic if set to 0) */
 	uint32_t manual_prio;
+	/** Enable per-CPU acquires */
+	bool pcpu_acquires;
 	/** Source address of the SA(s) tied to this policy */
 	host_t *src;
 	/** Destination address of the SA(s) tied to this policy */
