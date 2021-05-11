@@ -169,6 +169,16 @@ struct private_child_sa_t {
 	uint32_t if_id_out;
 
 	/**
+	 * CPU ID to use for the outbound SA
+	 */
+	uint32_t cpu;
+
+	/**
+	 * Number of CPUs to use for this SA (or more specifically the head SA)
+	 */
+	uint32_t num_cpus;
+
+	/**
 	 * inbound mark used for this child_sa
 	 */
 	mark_t mark_in;
@@ -729,6 +739,30 @@ METHOD(child_sa_t, get_mark, mark_t,
 	return inbound ? this->mark_in : this->mark_out;
 }
 
+METHOD(child_sa_t, get_cpu, uint32_t,
+	private_child_sa_t *this)
+{
+	return this->cpu;
+}
+
+METHOD(child_sa_t, set_cpu, void,
+	private_child_sa_t *this, uint32_t cpu)
+{
+	this->cpu = cpu;
+}
+
+METHOD(child_sa_t, get_num_cpus, uint32_t,
+	private_child_sa_t *this)
+{
+	return this->num_cpus;
+}
+
+METHOD(child_sa_t, set_num_cpus, void,
+	private_child_sa_t *this, uint32_t num_cpus)
+{
+	this->num_cpus = num_cpus;
+}
+
 METHOD(child_sa_t, get_if_id, uint32_t,
 	private_child_sa_t *this, bool inbound)
 {
@@ -786,7 +820,7 @@ static status_t install_internal(private_child_sa_t *this, chunk_t encr,
 	kernel_ipsec_sa_id_t id;
 	kernel_ipsec_add_sa_t sa;
 	lifetime_cfg_t *lifetime;
-	uint32_t tfc = 0;
+	uint32_t cpu = CPU_ID_MAX, tfc = 0;
 	host_t *src, *dst;
 	status_t status;
 	bool update = FALSE;
@@ -826,6 +860,10 @@ static status_t install_internal(private_child_sa_t *this, chunk_t encr,
 		if (tfcv3)
 		{
 			tfc = this->config->get_tfc(this->config);
+		}
+		if (this->num_cpus)
+		{
+			cpu = this->cpu;
 		}
 		this->outbound_state |= CHILD_OUTBOUND_SA;
 	}
@@ -913,7 +951,7 @@ static status_t install_internal(private_child_sa_t *this, chunk_t encr,
 		.ipcomp = this->ipcomp,
 		.cpi = cpi,
 		.encap = this->encap,
-		.cpu = CPU_ID_MAX,
+		.cpu = cpu,
 		.hw_offload = this->config->get_hw_offload(this->config),
 		.mark = this->config->get_set_mark(this->config, inbound),
 		.esn = esn,
@@ -948,11 +986,26 @@ METHOD(child_sa_t, install, status_t,
 }
 
 /**
- * Check kernel interface if policy updates are required
+ * Check whether to install policies for this CHILD_SA
  */
-static bool require_policy_update()
+static bool require_policies(private_child_sa_t *this)
+{
+	/* for per-CPU SAs we don't install policies, we rely on the head SA */
+	return !this->config->has_option(this->config, OPT_NO_POLICIES) &&
+			this->cpu == CPU_ID_MAX;
+}
+
+/**
+ * Check if policy updates are required
+ */
+static bool require_policy_update(private_child_sa_t *this)
 {
 	kernel_feature_t f;
+
+	if (!require_policies(this))
+	{
+		return FALSE;
+	}
 
 	f = charon->kernel->get_features(charon->kernel);
 	return !(f & KERNEL_NO_POLICY_UPDATES);
@@ -1060,6 +1113,7 @@ static status_t install_policies_outbound(private_child_sa_t *this,
 		.manual_prio = manual_prio,
 		.src = my_addr,
 		.dst = other_addr,
+		.pcpu_acquires = this->num_cpus,
 		.sa = other_sa,
 	};
 	status_t status = SUCCESS;
@@ -1168,6 +1222,7 @@ static void del_policies_outbound(private_child_sa_t *this,
 		.manual_prio = manual_prio,
 		.src = my_addr,
 		.dst = other_addr,
+		.pcpu_acquires = this->num_cpus,
 		.sa = other_sa,
 	};
 
@@ -1274,7 +1329,7 @@ METHOD(child_sa_t, install_policies, status_t,
 		this->outbound_state |= CHILD_OUTBOUND_POLICIES;
 	}
 
-	if (!this->config->has_option(this->config, OPT_NO_POLICIES))
+	if (require_policies(this))
 	{
 		policy_priority_t priority;
 		ipsec_sa_cfg_t my_sa, other_sa;
@@ -1319,8 +1374,10 @@ METHOD(child_sa_t, register_outbound, status_t,
 	status_t status;
 
 	/* if the kernel supports installing SPIs with policies we install the
-	 * SA immediately as it will only be used once we update the policies */
-	if (charon->kernel->get_features(charon->kernel) & KERNEL_POLICY_SPI)
+	 * SA immediately as it will only be used once we update the policies,
+	 * but not for per-CPU SAs as the policy can't list SPIs there */
+	if (charon->kernel->get_features(charon->kernel) & KERNEL_POLICY_SPI &&
+		!this->num_cpus)
 	{
 		status = install_internal(this, encr, integ, spi, cpi, FALSE, FALSE,
 								  tfcv3);
@@ -1363,7 +1420,7 @@ METHOD(child_sa_t, install_outbound, status_t,
 	{
 		return status;
 	}
-	if (!this->config->has_option(this->config, OPT_NO_POLICIES) &&
+	if (require_policies(this) &&
 		!(this->outbound_state & CHILD_OUTBOUND_POLICIES))
 	{
 		ipsec_sa_cfg_t my_sa, other_sa;
@@ -1407,7 +1464,7 @@ METHOD(child_sa_t, remove_outbound, void,
 		return;
 	}
 
-	if (!this->config->has_option(this->config, OPT_NO_POLICIES) &&
+	if (require_policies(this) &&
 		(this->outbound_state & CHILD_OUTBOUND_POLICIES))
 	{
 		ipsec_sa_cfg_t my_sa, other_sa;
@@ -1548,8 +1605,7 @@ METHOD(child_sa_t, update, status_t,
 						   this->config->has_option(this->config,
 													OPT_PROXY_MODE);
 
-	if (!this->config->has_option(this->config, OPT_NO_POLICIES) &&
-		require_policy_update() && array_count(this->my_ts) &&
+	if (require_policy_update(this) && array_count(this->my_ts) &&
 		array_count(this->other_ts))
 	{
 		ipsec_sa_cfg_t my_sa, other_sa;
@@ -1685,7 +1741,7 @@ METHOD(child_sa_t, destroy, void,
 
 	set_state(this, CHILD_DESTROYING);
 
-	if (!this->config->has_option(this->config, OPT_NO_POLICIES))
+	if (require_policies(this))
 	{
 		ipsec_sa_cfg_t my_sa, other_sa;
 		uint32_t manual_prio;
@@ -1827,6 +1883,10 @@ child_sa_t *child_sa_create(host_t *me, host_t *other, child_cfg_t *config,
 			.get_usestats = _get_usestats,
 			.get_mark = _get_mark,
 			.get_if_id = _get_if_id,
+			.get_cpu = _get_cpu,
+			.set_cpu = _set_cpu,
+			.set_num_cpus = _set_num_cpus,
+			.get_num_cpus = _get_num_cpus,
 			.has_encap = _has_encap,
 			.get_ipcomp = _get_ipcomp,
 			.set_ipcomp = _set_ipcomp,
@@ -1864,6 +1924,8 @@ child_sa_t *child_sa_create(host_t *me, host_t *other, child_cfg_t *config,
 		.mark_out = config->get_mark(config, FALSE),
 		.if_id_in = config->get_if_id(config, TRUE) ?: data->if_id_in_def,
 		.if_id_out = config->get_if_id(config, FALSE) ?: data->if_id_out_def,
+		.cpu = data->cpu,
+		.num_cpus = data->num_cpus,
 		.install_time = time_monotonic(NULL),
 		.policies_fwd_out = config->has_option(config, OPT_FWD_OUT_POLICIES),
 	);

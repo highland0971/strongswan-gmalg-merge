@@ -1944,6 +1944,9 @@ child_create_t *child_create_create(ike_sa_t *ike_sa,
 		.ipcomp_received = IPCOMP_NONE,
 		.rekey = rekey,
 		.retry = FALSE,
+		.child = {
+			.cpu = CPU_ID_MAX,
+		},
 	);
 
 	if (config)

@@ -1526,6 +1526,9 @@ quick_mode_t *quick_mode_create(ike_sa_t *ike_sa, child_cfg_t *config,
 		.tsi = tsi ? tsi->clone(tsi) : NULL,
 		.tsr = tsr ? tsr->clone(tsr) : NULL,
 		.proto = PROTO_ESP,
+		.child = {
+			.cpu = CPU_ID_MAX,
+		},
 		.delete = lib->settings->get_bool(lib->settings,
 										  "%s.delete_rekeyed", FALSE, lib->ns),
 	);
