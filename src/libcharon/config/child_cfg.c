@@ -172,6 +172,11 @@ struct private_child_cfg_t {
 	 * DS header field copy mode
 	 */
 	dscp_copy_t copy_dscp;
+
+	/**
+	 * Optional number of CPUs configured for per-CPU SAs
+	 */
+	uint32_t cpus;
 };
 
 METHOD(child_cfg_t, get_name, char*,
@@ -534,6 +539,12 @@ METHOD(child_cfg_t, get_manual_prio, uint32_t,
 	return this->manual_prio;
 }
 
+METHOD(child_cfg_t, get_cpus, uint32_t,
+	private_child_cfg_t *this)
+{
+	return this->cpus;
+}
+
 METHOD(child_cfg_t, get_interface, char*,
 	private_child_cfg_t *this)
 {
@@ -603,6 +614,7 @@ METHOD(child_cfg_t, equals, bool,
 		this->set_mark_out.mask == other->set_mark_out.mask &&
 		this->tfc == other->tfc &&
 		this->manual_prio == other->manual_prio &&
+		this->cpus == other->cpus &&
 		this->replay_window == other->replay_window &&
 		this->hw_offload == other->hw_offload &&
 		this->copy_dscp == other->copy_dscp &&
@@ -661,6 +673,7 @@ child_cfg_t *child_cfg_create(char *name, child_cfg_create_t *data)
 			.get_set_mark = _get_set_mark,
 			.get_tfc = _get_tfc,
 			.get_manual_prio = _get_manual_prio,
+			.get_cpus = _get_cpus,
 			.get_interface = _get_interface,
 			.get_replay_window = _get_replay_window,
 			.set_replay_window = _set_replay_window,
@@ -689,6 +702,7 @@ child_cfg_t *child_cfg_create(char *name, child_cfg_create_t *data)
 		.inactivity = data->inactivity,
 		.tfc = data->tfc,
 		.manual_prio = data->priority,
+		.cpus = data->cpus,
 		.interface = strdupnull(data->interface),
 		.refcount = 1,
 		.proposals = linked_list_create(),
