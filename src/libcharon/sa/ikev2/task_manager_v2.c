@@ -2110,6 +2110,7 @@ METHOD(task_manager_t, queue_child, void,
 	{
 		task = child_create_create(this->ike_sa, cfg, FALSE, args->src, args->dst);
 		task->use_reqid(task, args->reqid);
+		task->use_cpu(task, args->cpu);
 	}
 	else
 	{

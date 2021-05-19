@@ -417,6 +417,7 @@ METHOD(task_t, process_i, status_t,
 		child_cfg = this->child_sa->get_config(this->child_sa);
 		child_cfg->get_ref(child_cfg);
 		args.reqid = this->child_sa->get_reqid(this->child_sa);
+		args.cpu = this->child_sa->get_cpu(this->child_sa);
 		charon->bus->child_updown(charon->bus, this->child_sa, FALSE);
 		this->ike_sa->destroy_child_sa(this->ike_sa, protocol, spi);
 		return this->ike_sa->initiate(this->ike_sa,

@@ -151,6 +151,7 @@ static status_t delete_child(private_quick_delete_t *this,
 		{
 			child_init_args_t args = {
 				.reqid = child_sa->get_reqid(child_sa),
+				.cpu = child_sa->get_cpu(child_sa),
 			};
 			child_cfg = child_sa->get_config(child_sa);
 			child_cfg->get_ref(child_cfg);

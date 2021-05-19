@@ -364,6 +364,7 @@ static status_t destroy_and_reestablish(private_child_delete_t *this)
 		child_cfg = child_sa->get_config(child_sa);
 		child_cfg->get_ref(child_cfg);
 		args.reqid = child_sa->get_reqid(child_sa);
+		args.cpu = child_sa->get_cpu(child_sa);
 		action = child_sa->get_close_action(child_sa);
 
 		this->ike_sa->destroy_child_sa(this->ike_sa, protocol, spi);

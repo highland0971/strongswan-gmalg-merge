@@ -2075,6 +2075,7 @@ static status_t reestablish_children(private_ike_sa_t *this, ike_sa_t *new,
 			{
 				child_init_args_t args = {
 					.reqid = child_sa->get_reqid(child_sa),
+					.cpu = child_sa->get_cpu(child_sa),
 				};
 				child_cfg = child_sa->get_config(child_sa);
 				DBG1(DBG_IKE, "restarting CHILD_SA %s",
