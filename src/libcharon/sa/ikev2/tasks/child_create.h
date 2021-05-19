@@ -69,6 +69,20 @@ struct child_create_t {
 	void (*use_if_ids)(child_create_t *this, uint32_t in, uint32_t out);
 
 	/**
+	 * Use a specific number of CPUs negotiated previously.
+	 *
+	 * @param num_cpus	number of CPUs negotiated
+	 */
+	void (*use_num_cpus)(child_create_t *this, uint32_t num_cpus);
+
+	/**
+	 * Use a specific CPU ID for the negotiated CHILD_SA.
+	 *
+	 * @param cpu		CPU ID
+	 */
+	void (*use_cpu)(child_create_t *this, uint32_t cpu);
+
+	/**
 	 * Initially propose a specific DH group to override configuration.
 	 *
 	 * This is used during rekeying to prefer the previously negotiated group.
