@@ -1511,8 +1511,7 @@ static void resolve_hosts(private_ike_sa_t *this)
 }
 
 METHOD(ike_sa_t, initiate, status_t,
-	private_ike_sa_t *this, child_cfg_t *child_cfg, uint32_t reqid,
-	traffic_selector_t *tsi, traffic_selector_t *tsr)
+	private_ike_sa_t *this, child_cfg_t *child_cfg, child_init_args_t *args)
 {
 	bool defer_initiate = FALSE;
 
@@ -1567,8 +1566,7 @@ METHOD(ike_sa_t, initiate, status_t,
 	if (child_cfg)
 	{
 		/* normal IKE_SA with CHILD_SA */
-		this->task_manager->queue_child(this->task_manager, child_cfg, reqid,
-										tsi, tsr);
+		this->task_manager->queue_child(this->task_manager, child_cfg, args);
 #ifdef ME
 		if (this->peer_cfg->get_mediated_by(this->peer_cfg))
 		{
@@ -1601,7 +1599,7 @@ METHOD(ike_sa_t, retry_initiate, status_t,
 	if (this->retry_initiate_queued)
 	{
 		this->retry_initiate_queued = FALSE;
-		return initiate(this, NULL, 0, NULL, NULL);
+		return initiate(this, NULL, NULL);
 	}
 	return SUCCESS;
 }
@@ -2074,13 +2072,17 @@ static status_t reestablish_children(private_ike_sa_t *this, ike_sa_t *new,
 		switch (action)
 		{
 			case ACTION_RESTART:
+			{
+				child_init_args_t args = {
+					.reqid = child_sa->get_reqid(child_sa),
+				};
 				child_cfg = child_sa->get_config(child_sa);
 				DBG1(DBG_IKE, "restarting CHILD_SA %s",
 					 child_cfg->get_name(child_cfg));
 				child_cfg->get_ref(child_cfg);
-				status = new->initiate(new, child_cfg,
-								child_sa->get_reqid(child_sa), NULL, NULL);
+				status = new->initiate(new, child_cfg, &args);
 				break;
+			}
 			default:
 				continue;
 		}
@@ -2096,7 +2098,7 @@ static status_t reestablish_children(private_ike_sa_t *this, ike_sa_t *new,
 		new->adopt_child_tasks(new, &this->public);
 		if (new->get_state(new) == IKE_CREATED)
 		{
-			status = new->initiate(new, NULL, 0, NULL, NULL);
+			status = new->initiate(new, NULL, NULL);
 		}
 	}
 	return status;
@@ -2232,7 +2234,7 @@ METHOD(ike_sa_t, reestablish, status_t,
 #ifdef ME
 	if (this->peer_cfg->is_mediation(this->peer_cfg))
 	{
-		status = new->initiate(new, NULL, 0, NULL, NULL);
+		status = new->initiate(new, NULL, NULL);
 	}
 	else
 #endif /* ME */
