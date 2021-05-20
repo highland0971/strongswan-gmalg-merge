@@ -774,6 +774,8 @@ command.
 			nat-any = <yes, if any endpoint is behind a NAT (also if faked)>
 			if-id-in = <hex encoded default inbound XFRM interface ID>
 			if-id-out = <hex encoded default outbound XFRM interface ID>
+			per-cpu-sas = <negotiated number of per-CPU SAs>
+			cpu = <CPU ID of per-CPU SA>
 			encr-alg = <IKE encryption algorithm string>
 			encr-keysize = <key size for encr-alg, if applicable>
 			integ-alg = <IKE integrity algorithm string>

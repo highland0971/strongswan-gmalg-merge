@@ -157,7 +157,7 @@ static void list_child_ipsec(vici_builder_t *b, child_sa_t *child)
 {
 	proposal_t *proposal;
 	uint16_t alg, ks;
-	uint32_t if_id;
+	uint32_t if_id, cpu;
 
 	b->add_kv(b, "protocol", "%N", protocol_id_names,
 			  child->get_protocol(child));
@@ -185,6 +185,16 @@ static void list_child_ipsec(vici_builder_t *b, child_sa_t *child)
 	if (if_id)
 	{
 		b->add_kv(b, "if-id-out", "%.8x", if_id);
+	}
+	cpu = child->get_num_cpus(child);
+	if (cpu)
+	{
+		b->add_kv(b, "per-cpu-sas", "%u", cpu);
+	}
+	cpu = child->get_cpu(child);
+	if (cpu < CPU_ID_MAX)
+	{
+		b->add_kv(b, "cpu", "%u", cpu);
 	}
 
 	proposal = child->get_proposal(child);
