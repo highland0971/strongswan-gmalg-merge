@@ -116,6 +116,8 @@ typedef struct {
 	ike_sa_t *ike_sa;
 	/** reqid of pending trap policy */
 	uint32_t reqid;
+	/** CPU ID of pending acquire, if any */
+	uint32_t cpu;
 	/** destination address (wildcard case) */
 	host_t *dst;
 } acquire_t;
@@ -140,13 +142,13 @@ static void destroy_acquire(acquire_t *this)
 	free(this);
 }
 
-CALLBACK(acquire_by_reqid, bool,
+CALLBACK(acquire_by_ids, bool,
 	acquire_t *this, va_list args)
 {
-	uint32_t reqid;
+	uint32_t reqid, cpu;
 
-	VA_ARGS_VGET(args, reqid);
-	return this->reqid == reqid;
+	VA_ARGS_VGET(args, reqid, cpu);
+	return this->reqid == reqid && this->cpu == cpu;
 }
 
 CALLBACK(acquire_by_dst, bool,
@@ -424,7 +426,7 @@ METHOD(trap_manager_t, create_enumerator, enumerator_t*,
 }
 
 METHOD(trap_manager_t, acquire, void,
-	private_trap_manager_t *this, uint32_t reqid,
+	private_trap_manager_t *this, uint32_t reqid, uint32_t cpu,
 	traffic_selector_t *src, traffic_selector_t *dst)
 {
 	enumerator_t *enumerator;
@@ -456,6 +458,7 @@ METHOD(trap_manager_t, acquire, void,
 		return;
 	}
 	reqid = found->child_sa->get_reqid(found->child_sa);
+	/* FIXME: what's the interaction between CPU IDs and wildcards here */
 	wildcard = found->wildcard;
 
 	this->mutex->lock(this->mutex);
@@ -482,8 +485,8 @@ METHOD(trap_manager_t, acquire, void,
 	}
 	else
 	{
-		if (this->acquires->find_first(this->acquires, acquire_by_reqid,
-									  (void**)&acquire, reqid))
+		if (this->acquires->find_first(this->acquires, acquire_by_ids,
+									  (void**)&acquire, reqid, cpu))
 		{
 			ignore = TRUE;
 		}
@@ -491,6 +494,7 @@ METHOD(trap_manager_t, acquire, void,
 		{
 			INIT(acquire,
 				.reqid = reqid,
+				.cpu = cpu,
 			);
 			this->acquires->insert_last(this->acquires, acquire);
 		}
@@ -545,6 +549,7 @@ METHOD(trap_manager_t, acquire, void,
 	{
 		child_init_args_t args = {
 			.reqid = reqid,
+			.cpu = cpu,
 			.src = src,
 			.dst = dst,
 		};
@@ -587,6 +592,7 @@ static void complete(private_trap_manager_t *this, ike_sa_t *ike_sa,
 {
 	enumerator_t *enumerator;
 	acquire_t *acquire;
+	bool stop = FALSE;
 
 	this->mutex->lock(this->mutex);
 	enumerator = this->acquires->create_enumerator(this->acquires);
@@ -607,9 +613,21 @@ static void complete(private_trap_manager_t *this, ike_sa_t *ike_sa,
 			{
 				continue;
 			}
+			else if (acquire->cpu)
+			{
+				/* we don't compare the CPU ID as that could have gotten reset
+				 * to create a new head SA, so we just assume the SAs are
+				 * established in the same order in which acquires came in and
+				 * only remove the first match */
+				stop = TRUE;
+			}
 		}
 		this->acquires->remove_at(this->acquires, enumerator);
 		destroy_acquire(acquire);
+		if (stop)
+		{
+			break;
+		}
 	}
 	enumerator->destroy(enumerator);
 	this->mutex->unlock(this->mutex);

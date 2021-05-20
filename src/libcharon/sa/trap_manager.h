@@ -65,10 +65,11 @@ struct trap_manager_t {
 	 * Acquire an SA triggered by an installed trap.
 	 *
 	 * @param reqid		reqid of the triggering CHILD_SA
+	 * @param cpu		optional CPU ID of the acquire
 	 * @param src		source of the triggering packet
 	 * @param dst		destination of the triggering packet
 	 */
-	void (*acquire)(trap_manager_t *this, uint32_t reqid,
+	void (*acquire)(trap_manager_t *this, uint32_t reqid, uint32_t cpu,
 					traffic_selector_t *src, traffic_selector_t *dst);
 
 	/**

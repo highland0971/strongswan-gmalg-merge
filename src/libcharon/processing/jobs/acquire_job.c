@@ -56,7 +56,7 @@ METHOD(job_t, destroy, void,
 METHOD(job_t, execute, job_requeue_t,
 	private_acquire_job_t *this)
 {
-	charon->traps->acquire(charon->traps, this->reqid,
+	charon->traps->acquire(charon->traps, this->reqid, CPU_ID_MAX,
 						   this->src_ts, this->dst_ts);
 	return JOB_REQUEUE_NONE;
 }
