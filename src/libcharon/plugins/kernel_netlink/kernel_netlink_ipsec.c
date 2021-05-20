@@ -906,7 +906,7 @@ static void process_acquire(private_kernel_netlink_ipsec_t *this,
 	struct rtattr *rta;
 	size_t rtasize;
 	traffic_selector_t *src_ts, *dst_ts;
-	uint32_t reqid = 0;
+	uint32_t reqid = 0, cpu = CPU_ID_MAX;
 	int proto = 0;
 
 	acquire = NLMSG_DATA(hdr);
@@ -926,6 +926,10 @@ static void process_acquire(private_kernel_netlink_ipsec_t *this,
 			reqid = tmpl->reqid;
 			proto = tmpl->id.proto;
 		}
+		if (rta->rta_type == XFRMA_SA_PCPU)
+		{
+			cpu = *(uint32_t*)RTA_DATA(rta);
+		}
 		rta = RTA_NEXT(rta, rtasize);
 	}
 	switch (proto)
@@ -941,7 +945,7 @@ static void process_acquire(private_kernel_netlink_ipsec_t *this,
 	src_ts = selector2ts(&acquire->sel, TRUE);
 	dst_ts = selector2ts(&acquire->sel, FALSE);
 
-	charon->kernel->acquire(charon->kernel, reqid, CPU_ID_MAX, src_ts, dst_ts);
+	charon->kernel->acquire(charon->kernel, reqid, cpu, src_ts, dst_ts);
 }
 
 /**
