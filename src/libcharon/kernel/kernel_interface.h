@@ -513,10 +513,11 @@ struct kernel_interface_t {
 	 * Raise an acquire event.
 	 *
 	 * @param reqid			reqid of the policy to acquire
+	 * @param cpu			optional CPU ID for SA to acquire
 	 * @param src_ts		source traffic selector
 	 * @param dst_ts		destination traffic selector
 	 */
-	void (*acquire)(kernel_interface_t *this, uint32_t reqid,
+	void (*acquire)(kernel_interface_t *this, uint32_t reqid, uint32_t cpu,
 					traffic_selector_t *src_ts, traffic_selector_t *dst_ts);
 
 	/**

@@ -43,11 +43,12 @@ struct acquire_job_t {
  * Creates a job of type ACQUIRE.
  *
  * @param reqid		reqid of the trapped CHILD_SA to acquire
+ * @param cpu		optional CPU ID for the CHILD_SA to acquire
  * @param src_ts	source traffic selector
  * @param dst_ts	destination traffic selector
  * @return			acquire_job_t object
  */
-acquire_job_t *acquire_job_create(uint32_t reqid,
+acquire_job_t *acquire_job_create(uint32_t reqid, uint32_t cpu,
 								  traffic_selector_t *src_ts,
 								  traffic_selector_t *dst_ts);
 

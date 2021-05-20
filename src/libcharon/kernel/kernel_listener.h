@@ -39,11 +39,12 @@ struct kernel_listener_t {
 	 * Hook called if an acquire event for a policy is received.
 	 *
 	 * @param reqid			reqid of the policy to acquire
+	 * @param cpu			optional CPU ID (use CPU_ID_MAX if unspecified)
 	 * @param src_ts		source traffic selector
 	 * @param dst_ts		destination traffic selector
 	 * @return				TRUE to remain registered, FALSE to unregister
 	 */
-	bool (*acquire)(kernel_listener_t *this, uint32_t reqid,
+	bool (*acquire)(kernel_listener_t *this, uint32_t reqid, uint32_t cpu,
 					traffic_selector_t *src_ts, traffic_selector_t *dst_ts);
 
 	/**

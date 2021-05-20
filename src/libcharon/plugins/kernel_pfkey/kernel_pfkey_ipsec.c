@@ -1366,7 +1366,7 @@ static void process_acquire(private_kernel_pfkey_ipsec_t *this,
 	src_ts = sadb_address2ts(response.src);
 	dst_ts = sadb_address2ts(response.dst);
 
-	charon->kernel->acquire(charon->kernel, reqid, src_ts, dst_ts);
+	charon->kernel->acquire(charon->kernel, reqid, CPU_ID_MAX, src_ts, dst_ts);
 }
 
 /**

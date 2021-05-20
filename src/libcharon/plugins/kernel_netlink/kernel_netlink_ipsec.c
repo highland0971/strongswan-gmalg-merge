@@ -941,7 +941,7 @@ static void process_acquire(private_kernel_netlink_ipsec_t *this,
 	src_ts = selector2ts(&acquire->sel, TRUE);
 	dst_ts = selector2ts(&acquire->sel, FALSE);
 
-	charon->kernel->acquire(charon->kernel, reqid, src_ts, dst_ts);
+	charon->kernel->acquire(charon->kernel, reqid, CPU_ID_MAX, src_ts, dst_ts);
 }
 
 /**

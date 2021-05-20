@@ -1651,7 +1651,7 @@ static void acquire(private_kernel_wfp_ipsec_t *this, UINT64 filter_id,
 	{
 		src = src ? src->clone(src) : NULL;
 		dst = dst ? dst->clone(dst) : NULL;
-		charon->kernel->acquire(charon->kernel, reqid, src, dst);
+		charon->kernel->acquire(charon->kernel, reqid, CPU_ID_MAX, src, dst);
 	}
 }
 
