@@ -106,6 +106,10 @@ static bool rebuild_auth(private_rebuild_auth_t *this, ike_sa_t *ike_sa,
 			scheme = SIGN_RSA_EMSA_PKCS1_SHA1;
 			auth_method = AUTH_RSA;
 			break;
+		case KEY_SM2:
+			scheme = SIGN_SM2_WITH_SM3;
+			auth_method = AUTH_SM2;
+			break;
 		case KEY_ECDSA:
 			/* we try to deduct the signature scheme from the keysize */
 			switch (private->get_keysize(private))
