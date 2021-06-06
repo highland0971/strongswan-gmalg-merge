@@ -34,13 +34,16 @@ case $system in
     linux )
         ./configure   --prefix=$PREFIX \
                     --enable-kernel-libipsec  \
+		    --enable-eap-mschapv2 \
+		    --enable-md4 \
                     --enable-gmalg --with-gmalg_interior=yes
         ;;
 
     arm )
         ./configure --host=arm-linux  --prefix=$PREFIX                \
                       --enable-kernel-libipsec  \
-                      --enable-rng
+		      --enable-eap-mschapv2 \
+		      --enable-md4 \
                       --enable-gmalg --with-gmalg_interior=yes
         ;;
 
