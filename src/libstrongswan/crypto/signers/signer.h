@@ -62,14 +62,18 @@ enum integrity_algorithm_t {
 	/** RFC4868 */
 	AUTH_HMAC_SHA2_384_192 = 13,
 
-	/** Added by zhangke */
-	AUTH_HMAC_SM3 = 14,
+	// /** Added by zhangke */
+	// AUTH_HMAC_SM3 = 14,
 
 	/** RFC4868 */
 	/** orgin version
 	 * AUTH_HMAC_SHA2_512_256 = 14,
 	 */
-	AUTH_HMAC_SHA2_512_256 = 15,
+	AUTH_HMAC_SHA2_512_256 = 14,
+	// AUTH_HMAC_SHA2_512_256 = 15,
+
+	//According to to GB/T36968
+	AUTH_HMAC_SM3 = 20,
 
 	/** private use */
 	AUTH_HMAC_SHA1_128 = 1025,

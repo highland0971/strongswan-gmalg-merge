@@ -52,14 +52,16 @@ enum pseudo_random_function_t {
 	PRF_HMAC_SHA2_512 = 7,
 
 	/** Added by zhangke */
-	PRF_HMAC_SM3 = 8,
+	// PRF_HMAC_SM3 = 8,
 
 	/** RFC4615 */
 	/** Orgin version
 	 * PRF_AES128_CMAC = 8,
 	 */
-	PRF_AES128_CMAC = 9,
+	// PRF_AES128_CMAC = 9,
+	PRF_AES128_CMAC = 8,
 
+	PRF_HMAC_SM3 = 20,
 
 	/** FIPS 186-2-change1 */
 	PRF_FIPS_SHA1_160 = 1025,
