@@ -35,6 +35,13 @@ typedef struct prf_t prf_t;
  * PRF algorithms not defined in IKEv2 are allocated in "private use" space.
  */
 enum pseudo_random_function_t {
+
+	/** Added by zhangke */
+	// PRF_HMAC_SM3 = 8,
+
+	PRF_HMAC_SM3 = 20,
+
+
 	PRF_UNDEFINED = 1024,
 	/** RFC2104 */
 	PRF_HMAC_MD5 = 1,
@@ -51,9 +58,6 @@ enum pseudo_random_function_t {
 	/** RFC4868 */
 	PRF_HMAC_SHA2_512 = 7,
 
-	/** Added by zhangke */
-	// PRF_HMAC_SM3 = 8,
-
 	/** RFC4615 */
 	/** Orgin version
 	 * PRF_AES128_CMAC = 8,
@@ -61,7 +65,7 @@ enum pseudo_random_function_t {
 	// PRF_AES128_CMAC = 9,
 	PRF_AES128_CMAC = 8,
 
-	PRF_HMAC_SM3 = 20,
+	
 
 	/** FIPS 186-2-change1 */
 	PRF_FIPS_SHA1_160 = 1025,

@@ -19,7 +19,10 @@
 
 #include <asn1/oid.h>
 
-ENUM_BEGIN(pseudo_random_function_names, PRF_UNDEFINED, PRF_CAMELLIA128_XCBC,
+ENUM_BEGIN(pseudo_random_function_names,PRF_HMAC_SM3,PRF_HMAC_SM3,
+	"PRF_HMAC_SM3"
+)
+ENUM_NEXT(pseudo_random_function_names, PRF_UNDEFINED, PRF_CAMELLIA128_XCBC,PRF_HMAC_SM3,
 	"PRF_UNDEFINED",
 	"PRF_FIPS_SHA1_160",
 	"PRF_FIPS_DES",
