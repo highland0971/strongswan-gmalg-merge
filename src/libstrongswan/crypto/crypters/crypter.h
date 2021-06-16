@@ -74,6 +74,9 @@ enum encryption_algorithm_t {
 	ENCR_SM1_CBC            = 128,
 	ENCR_SM4_CBC            = 129,
 
+	ENCR_SM1_ECB            = 130,
+	ENCR_SM4_ECB            = 131,
+
 
 	ENCR_UNDEFINED =        1024,
 	ENCR_DES_ECB =          1025,
