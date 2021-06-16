@@ -61,7 +61,7 @@ enum pseudo_random_function_t {
 	// PRF_AES128_CMAC = 9,
 	PRF_AES128_CMAC = 8,
 
-	PRF_HMAC_SM3 = 20,
+	// PRF_HMAC_SM3 = 20,
 
 	/** FIPS 186-2-change1 */
 	PRF_FIPS_SHA1_160 = 1025,
