@@ -18,7 +18,7 @@
 
 ENUM_BEGIN(integrity_algorithm_names,AUTH_HMAC_SM3,AUTH_HMAC_SM3,
 	"HMAC_SM3",
-)
+);
 ENUM_NEXT(integrity_algorithm_names, AUTH_UNDEFINED, AUTH_CAMELLIA_XCBC_96,AUTH_HMAC_SM3,
 	"UNDEFINED",
 	"HMAC_SHA1_128",
