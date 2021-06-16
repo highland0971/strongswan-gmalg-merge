@@ -53,7 +53,7 @@ pseudo_random_function_t pseudo_random_function_from_oid(int oid)
 			return PRF_HMAC_SHA2_384;
 		case OID_HMAC_SHA512:
 			return PRF_HMAC_SHA2_512;
-		case OID_HMAC_SM3:
+		case OID_SM3:
 			return PRF_HMAC_SM3;
 		case OID_HMAC_SHA224:
 		case OID_HMAC_SHA512_224:
