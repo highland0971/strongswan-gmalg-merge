@@ -63,11 +63,11 @@ enum encryption_algorithm_t {
 	// ENCR_SM4_ECB            = 30,
 	// ENCR_SM4_CBC            = 31,
 
-	//Added by according to GB/T 36968-2018
-	ENCR_SM1_CBC            = 128,
-	ENCR_SM4_CBC            = 129,
-	ENCR_SM1_ECB            = 130,
-	ENCR_SM4_ECB            = 131,
+	
+	// ENCR_SM1_CBC            = 128,
+	// ENCR_SM4_CBC            = 129,
+	// ENCR_SM1_ECB            = 130,
+	// ENCR_SM4_ECB            = 131,
 	
 	/** Orgin version
 	* ENCR_CHACHA20_POLY1305 =  28,
@@ -85,6 +85,12 @@ enum encryption_algorithm_t {
 	/* see macros below to handle RC2 (effective) key length */
 	ENCR_RC2_CBC =          1028,
 	ENCR_AES_ECB =			1029,
+
+	//Added by according to GB/T 36968-2018
+	ENCR_SM1_ECB            = 130,
+	ENCR_SM1_CBC            = 128,
+	ENCR_SM4_ECB            = 131,
+	ENCR_SM4_CBC            = 129,
 };
 
 #define DES_BLOCK_SIZE			 8
