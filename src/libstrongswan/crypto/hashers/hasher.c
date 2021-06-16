@@ -21,14 +21,14 @@
 #include <asn1/oid.h>
 #include <credentials/keys/signature_params.h>
 
-ENUM_BEGIN(hash_algorithm_names, HASH_SHA1, HASH_IDENTITY,
+ENUM_BEGIN(hash_algorithm_names, HASH_SHA1, HASH_SM3,
 	"HASH_SHA1",
 	"HASH_SHA2_256",
 	"HASH_SHA2_384",
 	"HASH_SHA2_512",
-	"HASH_SM3",
-	"HASH_IDENTITY");
-ENUM_NEXT(hash_algorithm_names, HASH_UNKNOWN, HASH_SHA3_512, HASH_IDENTITY,
+	"HASH_IDENTITY",
+	"HASH_SM3");
+ENUM_NEXT(hash_algorithm_names, HASH_UNKNOWN, HASH_SHA3_512, HASH_SM3,
 	"HASH_UNKNOWN",
 	"HASH_MD2",
 	"HASH_MD4",
@@ -45,9 +45,9 @@ ENUM_BEGIN(hash_algorithm_short_names, HASH_SHA1, HASH_IDENTITY,
 	"sha256",
 	"sha384",
 	"sha512",
-	"sm3",
-	"identity");
-ENUM_NEXT(hash_algorithm_short_names, HASH_UNKNOWN, HASH_SHA3_512, HASH_IDENTITY,
+	"identity",
+	"sm3");
+ENUM_NEXT(hash_algorithm_short_names, HASH_UNKNOWN, HASH_SHA3_512, HASH_SM3,
 	"unknown",
 	"md2",
 	"md4",
@@ -59,14 +59,14 @@ ENUM_NEXT(hash_algorithm_short_names, HASH_UNKNOWN, HASH_SHA3_512, HASH_IDENTITY
 	"sha3_512");
 ENUM_END(hash_algorithm_short_names, HASH_SHA3_512);
 
-ENUM_BEGIN(hash_algorithm_short_names_upper, HASH_SHA1, HASH_IDENTITY,
+ENUM_BEGIN(hash_algorithm_short_names_upper, HASH_SHA1, HASH_SM3,
 	"SHA1",
 	"SHA2_256",
 	"SHA2_384",
 	"SHA2_512",
-	"SM3",
-	"IDENTITY");
-ENUM_NEXT(hash_algorithm_short_names_upper, HASH_UNKNOWN, HASH_SHA3_512, HASH_IDENTITY,
+	"IDENTITY",
+	"SM3");
+ENUM_NEXT(hash_algorithm_short_names_upper, HASH_UNKNOWN, HASH_SHA3_512, HASH_SM3,
 	"UNKNOWN",
 	"MD2",
 	"MD4",
