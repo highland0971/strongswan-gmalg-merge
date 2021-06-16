@@ -66,7 +66,7 @@ ENUM_END(hash_algorithm_short_names, HASH_SHA3_512);
 
 ENUM_BEGIN(hash_algorithm_short_names_upper, HASH_SM3, HASH_SM3,
 	"SM3");
-ENUM_BEGIN(hash_algorithm_short_names_upper, HASH_SHA1, HASH_IDENTITY,HASH_SM3,
+ENUM_NEXT(hash_algorithm_short_names_upper, HASH_SHA1, HASH_IDENTITY,HASH_SM3,
 	"SHA1",
 	"SHA2_256",
 	"SHA2_384",
