@@ -35,6 +35,8 @@ typedef struct hasher_t hasher_t;
  * Hash algorithms as defined for IKEv2
  */
 enum hash_algorithm_t {
+	HASH_SM3			= 20,
+	
 	/* RFC 7427 */
 	HASH_SHA1 			= 1,
 	HASH_SHA256			= 2,
@@ -49,7 +51,7 @@ enum hash_algorithm_t {
 
 	// HASH_IDENTITY		= 6,
 	HASH_IDENTITY		= 5,
-	HASH_SM3			= 20,
+	
 
 
 	/* use private use range for algorithms not defined/permitted by RFC 7427 */
