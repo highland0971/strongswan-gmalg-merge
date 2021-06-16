@@ -34,6 +34,10 @@ typedef struct signer_t signer_t;
  * Algorithms not specified in IKEv2 are allocated in private use space.
  */
 enum integrity_algorithm_t {
+
+	//According to to GB/T36968
+	AUTH_HMAC_SM3 = 20,
+	
 	AUTH_UNDEFINED = 1024,
 	/** RFC4306 */
 	AUTH_HMAC_MD5_96 = 1,
@@ -72,8 +76,7 @@ enum integrity_algorithm_t {
 	AUTH_HMAC_SHA2_512_256 = 14,
 	// AUTH_HMAC_SHA2_512_256 = 15,
 
-	//According to to GB/T36968
-	AUTH_HMAC_SM3 = 20,
+	
 
 	/** private use */
 	AUTH_HMAC_SHA1_128 = 1025,
