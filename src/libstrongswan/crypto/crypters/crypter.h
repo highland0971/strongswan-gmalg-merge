@@ -66,7 +66,6 @@ enum encryption_algorithm_t {
 	//Added by according to GB/T 36968-2018
 	ENCR_SM1_CBC            = 128,
 	ENCR_SM4_CBC            = 129,
-
 	ENCR_SM1_ECB            = 130,
 	ENCR_SM4_ECB            = 131,
 	
