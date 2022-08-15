@@ -192,7 +192,7 @@ bin/pki --req --in /tmp/client.key.pem --type sm2 --dn "C=Country, O=Company Nam
         ```
    - Try
         ```bash
-        /opt/ipsec/sbin/swanctl -i --child gw-ent1
+        /opt/ss-gmalg/sbin/swanctl -i --child gw-ent1
         ```
    - Client success output
         ```log
